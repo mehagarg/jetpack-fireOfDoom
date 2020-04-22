@@ -25,17 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val state = DoomState()
-            DoomCompose(state)
-            val handler = Handler()
-
-            val propagate: Runnable = object : Runnable {
-                override fun run() {
-                    handler.postDelayed(this, 500)
-                    state.offset = 300f + (Random.nextFloat() * 100)
-                }
-            }
-            propagate.run()
+            DoomCompose()
         }
     }
 }
@@ -46,11 +36,21 @@ data class DoomState(var offset: Float = 300f + (Random.nextFloat()*100))
 
 @Composable
 fun DoomCompose(
-    state: DoomState
+    state: DoomState = DoomState()
 ) {
     Canvas(modifier = Modifier.fillMaxSize()) {
         withSave { drawRect(state.offset) }
     }
+
+    val handler = Handler()
+
+    val propagate: Runnable = object : Runnable {
+        override fun run() {
+            handler.postDelayed(this, 500)
+            state.offset = 300f + (Random.nextFloat() * 100)
+        }
+    }
+    propagate.run()
 }
 
 private fun DrawScope.drawRect(offset: Float) {
